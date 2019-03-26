@@ -17,16 +17,30 @@ export default {
   saveUser: function(userData) {
     return axios.post("/api/user", userData);
   },
-  //Adds player to an existing table
-  newPlayer: function(tableID, player) {
-    return axios.put("/api/table/" + tableID, player);
-  },
   //Gets List of Top players
   getTop: function(){
     return axios.get("/api/top");
   },
-  //draws card for that game
+  //Gets list of active tables
+  getTables: function(){
+    return axios.get("/api/table")
+  },
+  // Gets a single table with an ID
+  getMyTable: function(id) {
+    console.log(id)
+    return axios.get("api/user/"+ id)
+  },
+  //Creates new table
+  newTable: function(){
+    console.log('new table made')
+    return axios.post("/api/table")
+  },
+  //gets table info
   nextCard: function(tableID){
     return axios.get("/api/table/" + tableID);
-  }
+  },
+  //Adds player to an existing table
+  newPlayer: function(tableID, player) {
+    return axios.put("/api/table/" + tableID, player);
+  },
 };

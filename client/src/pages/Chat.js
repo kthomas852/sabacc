@@ -27,11 +27,10 @@ useEffect(()=>{
         let strong = document.createElement('strong')
         strong.setAttribute('style', '{style.outputStrong}')
         strong.append(data.handle)
-        strong.append(':')
+        strong.append(': ')
         let p = document.createElement('p')
         p.append(strong)
         p.append(data.message)
-        let textNode = '<p><strong style={style.outputStrong}>' + data.handle + ': </strong>' + data.message + '</p>'
         document.getElementById('output').append(p);
     });
  }, [])
@@ -39,7 +38,7 @@ useEffect(()=>{
 
     return(
         <div id="mario-chat" style={style.marioChat}>
-            <h2 style={style.h2}>Mario Chat</h2>
+            <h2 style={style.h2}>Players Chatroom</h2>
             <div id="chat-window" style={style.chatWindow}>
                 <div id="output" style={style.output}></div>
             </div>

@@ -5,10 +5,12 @@ const app = express();
 const socket = require("socket.io");
 const PORT = process.env.PORT || 3001;
 const WEBPORT = 3002;
+const chatSocketManager = require('./controllers/SocketManager');
+const table = require('./controllers/TableController');
 
-const server = app.listen(WEBPORT, function(){console.log("websocket listening on "+WEBPORT)})
+const serverChat = app.listen(WEBPORT, function(){console.log("websocket listening on "+ WEBPORT)})
+const io = module.exports.io = socket(serverChat)
 
-const io = socket(server)
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -24,12 +26,41 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/sabacc");
 
 //Creates socket.io link to server
 //--------------------------------------------------------------------------------
+// io.on("connection", SocketManager)
+  //Chat listener
 io.on("connection", function(socket) {
-  console.log("a user connected "+socket.id);
+  console.log("a user connected "+ socket.id);
   socket.on("chat-message", function(data){
     io.sockets.emit('server-message', data)
     console.log("data-sent", data);
   });
+  //card draw listener
+  socket.on('card-call', function(data, currentHand){
+    let cards = currentHand
+    table.cardDraw(data).then((card)=>{
+      cards.push(card)
+      io.sockets.emit('next-card', cards)
+    })
+  })
+  //initial three card listener
+  socket.on('take-three', function(data){
+    let card = [-2,7,-11]
+    // table.cardDraw(data._tableID).then((card)=>{
+        io.sockets.emit('get-three', card)
+    // })
+  })
+  //Shuffle deck listener
+  socket.on('shuffle', function(data){
+      table.shuffleDeck(data._tableID).then((deck)=>{
+          io.sockets.emit('new-deck', deck)
+      })
+  })
+  //bet listener
+  socket.on('raise', function(){
+      table.raise(data._tableID).then((bet)=>{
+          io.sockets.emit('bet-raised', bet)
+      })
+  })
 
   socket.on("disconnect", function() {
     console.log("user disconnected");

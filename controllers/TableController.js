@@ -1,23 +1,23 @@
 const db = require("../models");
 const help = require("../scripts/helper")
 
-// console.log(help.sabaccDeck())
 module.exports={
     findAll: function(req, res) {
         db.Table
-            .findAll()
-            .sort()
-            .then()
-            .catch()
+        .find(req.query)
+        .sort({ date: -1 })
+        .then(dbModel => res.json(dbModel))
+        .catch(err => res.status(422).json(err));
     },
 
     findOne: function(req, res) {
-        console.log("Table controller hit Successfully")
-        db.Table
-            .findOne(_id = req.params.id)
-            .sort()
-            .then()
-            .catch()
+        db.User
+            .findOne({_id: req.params.id})
+            .then((dbModel) => {
+                res.json(dbModel)
+                console.log(dbModel)
+            })
+            .catch(err => res.status(422).json(err));
     },
 
     cardDraw: function(req, res){
@@ -25,8 +25,10 @@ module.exports={
             .findOne(_id = req.params.id)
             .then((obj) => {
                 let sendCard = obj.deck.pop();
-                return sendCard
+                res.json(sendCard)
+                console.log(sendCard)
             })
+            .findOneAndUpdate(_id = req.params.id, obj.pop())
             .catch(err=> res.status(422).json(err) )
     },
 
@@ -38,11 +40,17 @@ module.exports={
     },
 
     create: function(req, res) {
+        const body = {
+            players:[],
+            deck: help.sabaccDeck(),
+            pot: 0,
+            sabaccPot: 0,
+            currentMaxBet: 0
+        }
         db.Table
-            .findAll()
-            .sort()
-            .then()
-            .catch()
+          .create(body)
+          .then(dbModel => res.json(dbModel))
+          .catch(err => res.status(422).json(err));
     },
 
     update: function(req, res) {

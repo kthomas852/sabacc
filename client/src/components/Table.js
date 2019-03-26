@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import API from '../utils/API';
 
-export default function Table(){
+export default function Table(props){
     
+    useEffect(()=>{
+        console.log(props.players)
+    }, [])
+
     function launchTable(){
-        API.newPlayer("tuns@yahoo.com").then(res => {
+        API.newPlayer(props.id, "tuns@yahoo.com").then(res => {
         window.location.replace("/play")
         }).catch(err => console.log(err))
     }
@@ -13,7 +17,7 @@ export default function Table(){
         <div>
             <p style={style.averageText}>Average</p>
             <button onClick={launchTable} className="valign-wrapper" style={style.circle}>
-                <p style={style.numText} >5</p>
+                <p style={style.numText} >{props.players}</p>
             </button>
         </div>
     )

@@ -10,7 +10,7 @@ router.route("/")
   // Matches with "/api/table/:id"
 router
     .route("/:id")
-    .get(tableController.cardDraw)
+    .get(tableController.findOne)
     .post(tableController.shuffleDeck)
     .put(tableController.findOne)
     .delete(tableController.remove);

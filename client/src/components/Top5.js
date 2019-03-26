@@ -29,7 +29,6 @@ export default function Top5(){
     function fecthTop(){
         API.getTop().then((response) =>{
             setTop(response.data);
-            console.log("First Equals " + JSON.stringify(response.data[1].name))
         })
     }
 

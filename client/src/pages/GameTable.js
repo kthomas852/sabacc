@@ -1,54 +1,63 @@
-import React, {Component, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Row} from 'react-materialize';
 import Card from '../components/Card';
 import background from '../images/table-lando.jpg';
-import API from '../utils/API';
+import io from 'socket.io-client';
 
-// class GameTable extends Component{
-//     componentDidMount(){}
-//     render(){
+
 export default function GameTable (){
-        const [hand, setHand]= useState([1,2,3]);
-        const handArry =[1,2,3]
+        const [hand, setHand]= useState([]);
 
-        function hookTest(nextCard){
-            let cards = hand
-            cards.push(nextCard)
-            setHand(cards)
-            console.log(hand)
-        }
+        // Make connection fo Sockets
+        const socket = io('http://localhost:3002');
 
-        function drawCard(){
-            API.nextCard().then((res)=> {
-                let cards = hand
-                cards.push(res)
-                setHand(cards)
+        useEffect(()=>{
+            //card draw listener
+            socket.on('next-card', function(data){
+                console.log(data)
+                setHand(data)
             })
+            //shuffle listener
+            socket.on('new-deck', function(data){})
+            //Bet listener
+            socket.on('bet-raised', function(data){})
+            //Initial draw three cards listener
+            socket.on('get-three', function(data){
+                setHand(data)
+            })
+        }, [])
+
+       
+        //Socket calls for in game play
+        function drawCard(info, currentHand){
+            socket.emit('card-call', info, currentHand)
         }
-
-        function raiseBet(){}
-
+        function takeThree(info){
+            socket.emit('take-three', info)
+        }
+        function raiseBet(info){
+            socket.emit('raise', info)
+        }
         function callGame(){}
 
         return (
             <div style={style.main} className="container">
                 <Row style={style.bottom}>
-                    {handArry.map(function(){return <Card/>})}
+                    {hand.map(function(num){return <Card card={num}/>})}
                 </Row>
                 <div class="fixed-action-btn">
                 <a class="btn-floating btn-large lime darken-1">
                     <i class="large material-icons">content_copy</i>
                 </a>
                 <ul>
-                    <li><a class="btn-floating red darken-4"><i class="material-icons">record_voice_over</i></a></li>
+                    <li><a class="btn-floating red darken-4"><i class="material-icons" onClick={()=>takeThree("12")}>record_voice_over</i></a></li>
                     <li><a class="btn-floating light-green darken-1"><i class="material-icons">monetization_on</i></a></li>
-                    <li><a class="btn-floating cyan darken-4" onClick={()=>hookTest(12)}><i class="material-icons">vertical_align_top</i></a></li>
+                    <li><a class="btn-floating cyan darken-4" onClick={()=>drawCard("5c9aa40e2a3e984b04e05f52", hand)}><i class="material-icons">vertical_align_top</i></a></li>
                 </ul>
             </div>
             </div>
         )
     }
-// }
 
 const style = {
     main:{
@@ -67,8 +76,6 @@ const style = {
         position: 'absolute',
         bottom: '0',
         marginBottom: '0',
-        left: '40%'
+        left: '25%'
     }
 }
-
-// export default GameTable;

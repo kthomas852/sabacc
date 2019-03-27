@@ -14,7 +14,7 @@ export default function GameTable (){
         useEffect(()=>{
             //card draw listener
             socket.on('next-card', function(data){
-                console.log(data)
+                console.log("One card" + data)
                 setHand(data)
             })
             //shuffle listener
@@ -23,6 +23,7 @@ export default function GameTable (){
             socket.on('bet-raised', function(data){})
             //Initial draw three cards listener
             socket.on('get-three', function(data){
+                console.log("three cards: " + data)
                 setHand(data)
             })
         }, [])
@@ -32,8 +33,8 @@ export default function GameTable (){
         function drawCard(info, currentHand){
             socket.emit('card-call', info, currentHand)
         }
-        function takeThree(info){
-            socket.emit('take-three', info)
+        function takeThree(info, currentHand){
+            socket.emit('take-three', info, currentHand)
         }
         function raiseBet(info){
             socket.emit('raise', info)
@@ -50,9 +51,9 @@ export default function GameTable (){
                     <i class="large material-icons">content_copy</i>
                 </a>
                 <ul>
-                    <li><a class="btn-floating red darken-4"><i class="material-icons" onClick={()=>takeThree("12")}>record_voice_over</i></a></li>
+                    <li><a class="btn-floating red darken-4"><i class="material-icons" onClick={()=>takeThree("5c9ba7d32d1e0c1414e19ef2", hand)}>record_voice_over</i></a></li>
                     <li><a class="btn-floating light-green darken-1"><i class="material-icons">monetization_on</i></a></li>
-                    <li><a class="btn-floating cyan darken-4" onClick={()=>drawCard("5c9aa40e2a3e984b04e05f52", hand)}><i class="material-icons">vertical_align_top</i></a></li>
+                    <li><a class="btn-floating cyan darken-4" onClick={()=>drawCard("5c9ba7d32d1e0c1414e19ef2", hand)}><i class="material-icons">vertical_align_top</i></a></li>
                 </ul>
             </div>
             </div>

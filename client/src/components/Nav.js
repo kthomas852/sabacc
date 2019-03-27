@@ -7,7 +7,7 @@ export default function Nav(){
         <Navbar className="red darken-4" brand='Sabacc' right>
         <NavItem href='/instructions'><Icon>chrome_reader_mode</Icon></NavItem>
         <NavItem href='/chat'><Icon>chat</Icon></NavItem>
-        <NavItem href='/main' onClick={(playerID)=>{API.newTable(playerID)}}><Icon>add_circle</Icon></NavItem>
+        <NavItem href='/main' onClick={(playerID)=>{API.newTable(playerID); window.location.replace("/main")}}><Icon>add_circle</Icon></NavItem>
         <NavItem href='/'><Icon>undo</Icon></NavItem>
         </Navbar>
     )

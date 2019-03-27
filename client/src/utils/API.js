@@ -37,6 +37,7 @@ export default {
   },
   //gets table info
   nextCard: function(tableID){
+    console.log(tableID)
     return axios.get("/api/table/" + tableID);
   },
   //Adds player to an existing table

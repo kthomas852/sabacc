@@ -37,17 +37,29 @@ io.on("connection", function(socket) {
   //card draw listener
   socket.on('card-call', function(data, currentHand){
     let cards = currentHand
+    console.log("here here here: "+ data)
     table.cardDraw(data).then((card)=>{
+      console.log("Card: " + card)
       cards.push(card)
       io.sockets.emit('next-card', cards)
     })
+    .catch((err)=>{console.log(err)})
+    table.cardPop(data)
+    console.log("card popped")
   })
   //initial three card listener
-  socket.on('take-three', function(data){
-    let card = [-2,7,-11]
-    // table.cardDraw(data._tableID).then((card)=>{
-        io.sockets.emit('get-three', card)
-    // })
+  socket.on('take-three', function(data, currentHand){
+    let cards = currentHand
+    console.log("three three three: "+ data)
+    table.threeCardDraw(data).then((card)=>{
+      console.log("Cards: " + card)
+      let final = cards.concat(card)
+      console.log("Current hand: " + final)
+      io.sockets.emit('get-three', final)
+    })
+    .catch((err)=>{console.log(err)})
+    table.threeCardPop(data)
+    console.log("3 cards popped")
   })
   //Shuffle deck listener
   socket.on('shuffle', function(data){

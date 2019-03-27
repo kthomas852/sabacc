@@ -20,16 +20,60 @@ module.exports={
             .catch(err => res.status(422).json(err));
     },
 
-    cardDraw: function(req, res){
-        db.Table
-            .findOne(_id = req.params.id)
+    cardDraw: async function(req, res){
+        let sendCard = 0
+        let deckObj = []
+        await db.Table
+            .findOne({_id: req})
             .then((obj) => {
-                let sendCard = obj.deck.pop();
-                res.json(sendCard)
-                console.log(sendCard)
+                sendCard = obj.deck.pop();
+                deckObj = obj
+                console.log("objects: " + sendCard)
             })
-            .findOneAndUpdate(_id = req.params.id, obj.pop())
-            .catch(err=> res.status(422).json(err) )
+            .catch(err=> console.log("error happened: " + err))
+            // console.log(deckObj)
+            return sendCard
+    },
+
+    cardPop: function(req){
+        db.Table
+            .findOneAndUpdate({_id: req}, {$pop: {deck: 1}}, (err, doc)=>{
+                if(err){
+                    console.log("Error: " + err)
+                }
+                console.log(doc.deck)
+            })
+            .catch(err=> console.log("error happened: " + err))
+    },
+
+    threeCardDraw: async function(req, res){
+        let sendCards = []
+        let deckObj = []
+        await db.Table
+            .findOne({_id: req})
+            .then((obj) => {
+                let inTemp = []
+                inTemp.push(obj.deck.pop());
+                inTemp.push(obj.deck.pop());
+                inTemp.push(obj.deck.pop());
+                sendCards = inTemp
+                deckObj = obj
+                console.log("objects: " + sendCards)
+            })
+            .catch(err=> console.log("error happened: " + err))
+            // console.log(deckObj.deck)
+            return sendCards
+    },
+
+    threeCardPop: function(req){
+        db.Table
+            .findOneAndUpdate({_id: req}, {$pop: {deck: 1}}, (err, doc)=>{
+                if(err){
+                    console.log("Error: " + err)
+                }
+                console.log(doc.deck)
+            })
+            .catch(err=> console.log("error happened: " + err))
     },
 
     shuffleDeck: function (req, res){

@@ -91,6 +91,7 @@ class Login extends Component{
                         type="text"
                         onChange={event => this.setState({modalPassword: event.target.value})}/>
                     <Button 
+                        className="light-green darken-3"
                         type="submit"
                         onClick={this.createUser}>Create</Button>
                 </Row>

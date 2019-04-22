@@ -1,10 +1,18 @@
 # Sabacc
 ### The intergalactic gambling game
 
-* Accepts 2-4 players at a table
+* Accepts 2-6 players at a table
 * Tracks life time credits of a player
 * Requires users to login to play
 * Fun Fun Fun
+
+## Rules of the Game
+* Goal: Beat the other players with one of the following and win the pot
+    - Idiots Array: [0,2,3] or [0,-2,-3] or combination of - & +
+    - Pure Sabacc: 23
+    - Sabacc: -23
+    - Hands closest to 23 or -23 without going over
+Players all draw three cards to begin.  Each round has an open bet phase where the player can either raise or draws a card and then call to end their turn. After three rounds all players will have six cards and will select their `best combination`. This is done by clicking on the cards they want and show their hand (Hit the `Call` button one final time).  
 
 ## DataBase Models
 ## ~ User

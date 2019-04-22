@@ -7,7 +7,13 @@ export default {
   },
   // Gets the user with the given id
   getUser: function(email, obj) {
-    return axios.put("api/user/"+ email, obj)
+    return axios.put("api/user/"+ email, obj).then((data)=>{
+      console.log(data.data);
+      localStorage.setItem('data', JSON.stringify({
+        loggedInPlayer: data.data._id,
+        tableNumber: ''
+      }));
+    })
   },
   // Deletes the user with the given id
   deleteUser: function(email, password) {
@@ -44,4 +50,8 @@ export default {
   newPlayer: function(tableID, player) {
     return axios.put("/api/table/" + tableID, player);
   },
+  wrapper: function(props){
+    console.log("Wrapper fired!: "+ props)
+    return props
+  }
 };

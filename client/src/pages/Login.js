@@ -75,7 +75,7 @@ class Login extends Component{
             </Row>
             <Modal
                 header='New User Form'
-                trigger={<Button className="light-green darken-3" style={style.btnText}>Create New User
+                trigger={<Button className="light-green darken-3" style={style.btnText}>Welcome New Player
                 <Icon right>insert_chart</Icon></Button>}>
                 <Row>
                     <Input

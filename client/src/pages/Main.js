@@ -4,10 +4,13 @@ import Top5 from '../components/Top5'
 import Table from '../components/Table'
 import background from '../images/main-solo.jpg';
 import API from '../utils/API';
+// import TableWrapper from '../components/tableWrapper';
+// import Loader from '../HOC/LoaderHOC';
 
 
-export default function Main (){
+/*export default*/ function Main (){
     const [floor, setFloor] = useState([])
+    // const WrappedTables = TableWrapper(Table, floor, ()=> API.wrapper())
 
     useEffect(()=>{
         API.getTables().then((tables)=>{
@@ -33,6 +36,7 @@ export default function Main (){
         <div className="col s5"></div>
         <div className="col s4">
             <h3 style={style.pickerText}>Pick Your Table</h3>
+            {/* <WrappedTables/> */}
             {floor.map(function(T){
                 return <Table id={T.id} players={T.players}/>
             })}
@@ -59,3 +63,5 @@ const style = {
         height:'260px'
     }
 }
+
+export default Main

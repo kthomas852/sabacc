@@ -5,7 +5,6 @@ import io from 'socket.io-client';
 export default function Chat (){
 const [message, setMessage] = useState("")
 const [handle, setHanlde] = useState("")
-const [output, setOutput] = useState("")
 
 // Make connection fo Sockets
 const socket = io('http://localhost:3002');
@@ -97,7 +96,6 @@ const style = {
     input: {
         padding: '10px 20px',
         boxSizing: 'border-box',
-        background: '#eee',
         border: '0',
         display: 'block',
         width: '100%',

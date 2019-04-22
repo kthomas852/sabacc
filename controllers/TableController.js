@@ -61,12 +61,21 @@ module.exports={
                 console.log("objects: " + sendCards)
             })
             .catch(err=> console.log("error happened: " + err))
-            // console.log(deckObj.deck)
             return sendCards
     },
 
     threeCardPop: function(req){
         db.Table
+            // .findOneAndUpdate({_id: req}, {$pop: {deck: 1}}, (err, doc)=>{
+            //     if(err){
+            //         console.log("Error: " + err)
+            //     }
+            // })
+            .findOneAndUpdate({_id: req}, {$pop: {deck: 1}}, (err, doc)=>{
+                if(err){
+                    console.log("Error: " + err)
+                }
+            })
             .findOneAndUpdate({_id: req}, {$pop: {deck: 1}}, (err, doc)=>{
                 if(err){
                     console.log("Error: " + err)
@@ -89,7 +98,8 @@ module.exports={
             deck: help.sabaccDeck(),
             pot: 0,
             sabaccPot: 0,
-            currentMaxBet: 0
+            currentMaxBet: 0,
+            round: [0,0]
         }
         db.Table
           .create(body)
@@ -98,11 +108,11 @@ module.exports={
     },
 
     update: function(req, res) {
+        console.log("id into update: " + req.params.id)
         db.Table
-            .findAll()
-            .sort()
-            .then()
-            .catch()
+            .findOneAndUpdate({_id: req.params.id}, {$push: {players: req.body.player}})
+            .then(()=>{console.log("player added to table: ")})
+            .catch((err)=> console.log("Error in the table update"))
     },
 
     remove: function(req, res) {
@@ -111,6 +121,39 @@ module.exports={
             .sort()
             .then()
             .catch()
+    },
+
+    roundCheck: function(id, info){
+        let roundObj = {
+            nextPlay:'',
+            round: []
+        };
+        //if the round[1] equal # of players then calculate the win
+        //else proceed to next player or next round
+        if((info.round[0] === 3) && (info.round[1] === info.player.length)){
+            //Checks who won and returns winning players id
+            nextPlay = checkWin()
+            round = [7, 7]
+
+        }else if(info.round[1] === info.player.length){
+            db.Table
+                .findOneAndUpdate({_id: id}, {round: [info.round[0] + 1, 0]})
+                .then((currentTable)=>{
+                    roundObj.nextPlay = currentTable.players[currentTable.round[1]]
+                    roundObj.round = currentTable.round
+                })
+                .catch((err)=>{console.log("Error updating Round")})
+
+        }else{
+            db.Table
+                .findOneAndUpdate({_id: id}, {round: [info.round[0], info.round[1] + 1]})
+                .then((currentTable)=>{
+                    roundObj.nextPlay = currentTable.players[currentTable.round[1]]
+                    roundObj.round = currentTable.round
+                })
+                .catch((err)=>{console.log("Error updating Round")})
+        }
+        return roundObj
     }
 
 

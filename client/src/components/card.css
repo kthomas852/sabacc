@@ -9,7 +9,10 @@
     border-radius: 10%;
     border: solid 8px green
 }
-.playingCardPositive.active{
+.playingCardPositive:active{
+    background-color: rgb(178, 241, 178); 
+}
+.playingCardPositive:focus{
     background-color: rgb(178, 241, 178); 
 }
 .playingCardNegative {
@@ -24,6 +27,9 @@
     border: solid 8px red
 }
 .playingCardNegative:active{
+    background-color: rgb(178, 241, 178); 
+}
+.playingCardNegative:focus{
     background-color: rgb(178, 241, 178); 
 }
 .selected{

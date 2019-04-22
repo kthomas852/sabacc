@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
+  app.use(express.static("client/public"));
 }
 // Add routes, both API and view
 app.use(routes);
@@ -35,27 +35,28 @@ io.on("connection", function(socket) {
     console.log("data-sent", data);
   });
   //card draw listener
-  socket.on('card-call', function(data, currentHand){
+  socket.on('card-call', function(data, currentHand, sendingPlayer){
     let cards = currentHand
     console.log("here here here: "+ data)
     table.cardDraw(data).then((card)=>{
       console.log("Card: " + card)
       cards.push(card)
-      io.sockets.emit('next-card', cards)
+      io.sockets.emit(`${sendingPlayer}next-card`, cards)
     })
     .catch((err)=>{console.log(err)})
     table.cardPop(data)
     console.log("card popped")
   })
   //initial three card listener
-  socket.on('take-three', function(data, currentHand){
+  socket.on('take-three', function(data, currentHand, sendingPlayer){
     let cards = currentHand
     console.log("three three three: "+ data)
     table.threeCardDraw(data).then((card)=>{
       console.log("Cards: " + card)
       let final = cards.concat(card)
       console.log("Current hand: " + final)
-      io.sockets.emit('get-three', final)
+      console.log("sending player: " + sendingPlayer)
+      io.sockets.emit(/*sendingPlayer +*/ `${sendingPlayer.toString()}get-three`, final)
     })
     .catch((err)=>{console.log(err)})
     table.threeCardPop(data)
@@ -68,10 +69,16 @@ io.on("connection", function(socket) {
       })
   })
   //bet listener
-  socket.on('raise', function(){
+  socket.on('raise', function(sendingPlayer){
       table.raise(data._tableID).then((bet)=>{
-          io.sockets.emit('bet-raised', bet)
+          io.sockets.emit(`${sendingPlayer}bet-raised`, bet)
       })
+  })
+  //Round Listener
+  socket.on('round-call', function(data, hand){
+    table.roundCheck(data, hand).then((res)=>{
+      io.socket.emit('round-info', res)
+    })
   })
 
   socket.on("disconnect", function() {

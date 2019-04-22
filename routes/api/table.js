@@ -12,7 +12,7 @@ router
     .route("/:id")
     .get(tableController.findOne)
     .post(tableController.shuffleDeck)
-    .put(tableController.findOne)
+    .put(tableController.update)
     .delete(tableController.remove);
 
 module.exports = router;

@@ -92,11 +92,11 @@ db.Top5
 
 db.Table
   .remove({})
-  .then(() => db.Table.collection.insertOne(tableSeed))
-  .then(data => {
-    console.log(data.result.n + " Table records inserted");
-    process.exit(0)
-  })
+  // .then(() => db.Table.collection.insertOne(tableSeed))
+  // .then(data => {
+  //   console.log(data.result.n + " Table records cleared and inserted");
+  //   process.exit(0)
+  // })
   .catch(err => {
     console.error(err)
     process.exit(1)

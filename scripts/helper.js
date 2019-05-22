@@ -36,5 +36,17 @@ sabaccDeck: function(){
     deck.push(0);
 
     return this.shuffle(deck);
+},
+
+//Checks to see if there are any players at the table, if not it removes table
+tableDestruct: function(id, playerList, cbFunc){
+	if(playerList.length < 1){
+		console.log("ID: " + id)
+		console.log("players: " + playerList)
+		console.log("func: " + cbFunc)
+		cbFunc()
+		cbFunc(id)
+	}
+	console.log("Game in Progress...")
 }
 }

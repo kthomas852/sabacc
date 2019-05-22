@@ -32,31 +32,29 @@ io.on("connection", function(socket) {
   console.log("a user connected "+ socket.id);
   socket.on("chat-message", function(data){
     io.sockets.emit('server-message', data)
-    console.log("data-sent", data);
   });
   //card draw listener
-  socket.on('card-call', function(data, currentHand, sendingPlayer){
+  socket.on('card-call', function(tableId, currentHand, sendingPlayer){
     let cards = currentHand
-    console.log("here here here: "+ data)
-    table.cardDraw(data).then((card)=>{
-      console.log("Card: " + card)
+    table.cardDraw(tableId).then((card)=>{
       cards.push(card)
       io.sockets.emit(`${sendingPlayer}next-card`, cards)
     })
     .catch((err)=>{console.log(err)})
-    table.cardPop(data)
+    table.cardPop(tableId).then((res)=>{
+      table.roundCheck(tableId, res, cards)
+        .then((data)=>{
+          io.sockets.emit(`round-info`, data)
+        })
+    })
     console.log("card popped")
   })
   //initial three card listener
   socket.on('take-three', function(data, currentHand, sendingPlayer){
     let cards = currentHand
-    console.log("three three three: "+ data)
     table.threeCardDraw(data).then((card)=>{
-      console.log("Cards: " + card)
       let final = cards.concat(card)
-      console.log("Current hand: " + final)
-      console.log("sending player: " + sendingPlayer)
-      io.sockets.emit(/*sendingPlayer +*/ `${sendingPlayer.toString()}get-three`, final)
+      io.sockets.emit(`${sendingPlayer}get-three`, final)
     })
     .catch((err)=>{console.log(err)})
     table.threeCardPop(data)
@@ -75,11 +73,29 @@ io.on("connection", function(socket) {
       })
   })
   //Round Listener
-  socket.on('round-call', function(data, hand){
-    table.roundCheck(data, hand).then((res)=>{
-      io.socket.emit('round-info', res)
+  socket.on('round-call', function(id, data, hand){
+    table.roundCheck(id, data, hand).then((res)=>{
+      io.sockets.emit(`round-info`, res)
+      io.sockets.emit(`${table.checkTurn()}my-turn`)
     })
   })
+  //Listener for Player leaving table
+  socket.on('remove-player-@table', function(id, player){
+    table.removePlayer(id, player)
+  })
+  //Table information Listener
+  socket.on('table-info', function(id, sendingPlayer){
+    table.getTableInfo(id).then((res)=>{
+      io.sockets.emit(`${sendingPlayer}table-info-back`, res)
+    })
+  })
+  //Fold hand listener
+  socket.on('fold-hand', function(id, sendingPlayer){
+    table.foldHand(id, sendingPlayer).then(()=>{
+      io.sockets.emit(`${sendingPlayer}hand-folded`)
+    })
+  })
+  
 
   socket.on("disconnect", function() {
     console.log("user disconnected");

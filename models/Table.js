@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const tableSchema = new Schema({
-    players: [{type: String, required: true}],
+    players: [{ID: {type: String, required: true}, deltIn: {type: Boolean, required: true}}],
     deck:[{type: String, required: true}],
     pot: {type: Number, required: true},
     sabaccPot: {type: Number, required: true},

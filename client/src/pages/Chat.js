@@ -7,7 +7,7 @@ const [message, setMessage] = useState("")
 const [handle, setHanlde] = useState("")
 
 // Make connection fo Sockets
-const socket = io('http://localhost:3002');
+const socket = io(window.location.hostname + ':3002');
 
 // Emit events
 function btnClick(){
